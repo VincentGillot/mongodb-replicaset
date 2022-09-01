@@ -2,6 +2,10 @@
 
 This image deploys a mongodb replica set database. Meant for development.
 
+## Github
+
+https://github.com/VincentGillot/mongodb-replicaset
+
 ### Connection
 
 This instance deploys on localhost:27017,localhost:27018,localhost:27019
