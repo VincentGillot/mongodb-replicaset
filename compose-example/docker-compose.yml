@@ -1,0 +1,42 @@
+version: "3.7"
+name: "mongo-replicaset"
+
+services:
+  mongo:
+    image: medanosol/mongodb-replicaset
+    container_name: mongo-replicaset
+    restart: always
+    ports:
+      - "27017:27017"
+      - "27018:27018"
+      - "27019:27019"
+    env_file:
+      - .env
+    volumes:
+      - ./example/data:/mongo/data
+      - ./example/key:/key
+    networks:
+      - mongo-replicaset
+  express:
+    image: mongo-express
+    container_name: mongo-replicaset-express
+    restart: always
+    networks:
+      - mongo-replicaset
+    ports:
+      - ${EXPRESS_PORT}:8081
+    environment:
+      - ME_CONFIG_MONGODB_ENABLE_ADMIN=true
+      - ME_CONFIG_MONGODB_AUTH_USERNAME=${MONGO_ROOT_USER}
+      - ME_CONFIG_MONGODB_AUTH_PASSWORD=${MONGO_ROOT_PASSWORD}
+      - ME_CONFIG_MONGODB_PORT=27017
+      - ME_CONFIG_MONGODB_SERVER=mongo
+      - ME_CONFIG_BASICAUTH_USERNAME=${EXPRESS_USER}
+      - ME_CONFIG_BASICAUTH_PASSWORD=${EXPRESS_PASSWORD}
+    depends_on:
+      - mongo
+
+networks:
+  mongo-replicaset:
+    name: mongo-replicaset-network
+    driver: bridge
